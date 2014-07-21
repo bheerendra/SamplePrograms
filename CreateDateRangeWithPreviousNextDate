@@ -1,0 +1,59 @@
+<html>
+	<head>
+		<script>
+		var datesToCheck=[];
+		var arrayOfDatesWithPrevNext=[];
+		var arrayWithRange=[];
+		for(var i=50;i>0;i--)
+		{
+			var d1= new Date(2014,1,1);
+			var d2=new Date(2014,1,1);
+			d2.setDate(d1.getDate()+i*2);
+			if(i<25&&(i%2))
+			datesToCheck.push(d1,d2);				
+		}
+		
+		//Collect all the dates surrounding the actual date
+		datesToCheck.forEach(function(currDate){			
+			var prev=new Date(currDate.getFullYear(),currDate.getMonth(),currDate.getDate()-1);
+			var next=new Date(currDate.getFullYear(),currDate.getMonth(),currDate.getDate()+1);
+			arrayOfDatesWithPrevNext.push(prev,currDate,next);
+			
+		});
+		//Sort the dates
+		arrayOfDatesWithPrevNext.sort(function(date1,date2){
+			return date1 - date2
+		});
+		//Deduplicate the dates to make array unique
+		var dateCount = 0;
+		while (dateCount < arrayOfDatesWithPrevNext.length) {
+			if (Number(arrayOfDatesWithPrevNext[dateCount]) === Number(arrayOfDatesWithPrevNext[dateCount + 1])) {
+				arrayOfDatesWithPrevNext.splice(dateCount + 1, 1);				
+				}
+			else {
+				dateCount += 1;
+				}
+		}
+		//Loop through each date and create a start-end pair for consecutive dates, push them to an array
+		var start=arrayOfDatesWithPrevNext[0],curr=arrayOfDatesWithPrevNext[0],end=arrayOfDatesWithPrevNext[0];
+		for(var i=1;i<arrayOfDatesWithPrevNext.length;i++)
+		{
+			curr=arrayOfDatesWithPrevNext[i-1];
+			end=arrayOfDatesWithPrevNext[i];					
+			if((end.getTime()-curr.getTime())!==86400000)
+			{				
+				end=arrayOfDatesWithPrevNext[i-1]
+				arrayWithRange.push({"start":start,"end":end});				
+				start=arrayOfDatesWithPrevNext[i];
+			}
+		}
+		arrayWithRange.push({"start":start,"end":end});
+		arrayWithRange.forEach(function(f){document.writeln("["+f.start.getDate()+"-"+f.end.getDate()+"]");});
+		
+		</script>
+	</head>
+	<body>
+	<title>Create date range with previous and next day</title>
+	<div id="text">Test -- Date(2014,1,1) and Some random dates taken around it.</div>
+	</body>
+</html>
